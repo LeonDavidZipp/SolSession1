@@ -1,17 +1,23 @@
-import { Command } from 'commander';
+#!/usr/bin/env node
+const commander = require("commander");
+const figlet = require("figlet");
 
-const program = new Command();
+const program = new commander.Command();
+
+// console.log(figlet.textSync("Solana CLI", {
+//     font: "Standard",
+//     horizontalLayout: "default",
+//     verticalLayout: "default"
+// }));
 
 program
-  .name('my-cli')
-  .description('An example CLI for demonstration purposes')
-  .version('1.0.0');
+  .version("1.0.0")
+  .description("An example CLI for managing a directory")
+  .option("-g, --generate", "generate new directory")
+  .option("-a, --airdrop <receiver-address>", "Airdrop SOL to a public address")
+  .option("-s, --send <amount> <sender-address> <receiver-address>", "Create a file")
+  .parse(process.argv);
 
-program
-  .command('greet <name>')
-  .description('Greet a person')
-  .action((name) => {
-    console.log(`Hello, ${name}!`);
-  });
+const options = program.opts();
 
 program.parse(process.argv);
