@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.1",
-    "commander": "^12.1.0",
-    "figlet": "^1.7.0"
+    "commander": "^12.1.0"
   }
 }
