@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 const commander = require("commander");
 
-import { Keypair } from "@solana/web3.js";
+import {
+    Keypair, Connection, clusterApiUrl,
+    SystemProgram, Transaction, PublicKey,
+    LAMPORTS_PER_SOL
+} from "@solana/web3.js";
+import bs58 from "bs58";
 import { writeFileSync } from "fs";
+
+let connection = new Connection(clusterApiUrl("testnet"));
 
 /**
  * Generates a new keypair and writes it to a file
@@ -35,7 +42,22 @@ async function requestAirdrop(to: string) {
  * @param to The public address to send the SOL to
  */
 async function sendSol(amount: number, from: string, to: string) {
-    ;
+    let transaction = new Transaction();
+    const fromKeypair = privateKeyStringToKeypair(from);
+    const toPubkey = new PublicKey(to);
+ 
+    transaction.add(
+    SystemProgram.transfer({
+        fromPubkey: fromKeypair.publicKey,
+        toPubkey: toPubkey,
+        lamports: amount * LAMPORTS_PER_SOL,
+    }),
+    );
+}
+
+function privateKeyStringToKeypair(privateKeyString: string): Keypair {
+    const privateKeyUint8Array = bs58.decode(privateKeyString);
+    return Keypair.fromSecretKey(privateKeyUint8Array);
 }
 
 
