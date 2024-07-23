@@ -4,6 +4,9 @@ const commander = require("commander");
 import { Keypair } from "@solana/web3.js";
 import { writeFileSync } from "fs";
 
+/**
+ * Generates a new keypair and writes it to a file
+ */
 async function generateKeyPair() {
     const keypair = Keypair.generate();
     const keyDetails = {
@@ -17,11 +20,21 @@ async function generateKeyPair() {
     console.log("Keypair generated and written to keypair.json!");
 }
 
-async function requestAirdrop() {
-    ;
+/**
+ * Request an airdrop of SOL to a public address
+ * @param to The public address to send the airdrop to
+ */
+async function requestAirdrop(to: string) {
+    
 }
 
-async function sendSol() {
+/**
+ * Send SOL from one address to another
+ * @param amount The amount of SOL to send
+ * @param from The public address to send the SOL from
+ * @param to The public address to send the SOL to
+ */
+async function sendSol(amount: number, from: string, to: string) {
     ;
 }
 
