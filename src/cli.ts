@@ -1,14 +1,32 @@
 #!/usr/bin/env node
 const commander = require("commander");
-const figlet = require("figlet");
+
+import { Keypair } from "@solana/web3.js";
+import { writeFileSync } from "fs";
+
+async function generateKeyPair() {
+    const keypair = Keypair.generate();
+    const keyDetails = {
+        privateKey: Array.from(keypair.secretKey),
+        publicKeyString: keypair.publicKey.toString(),
+        publicKey: Array.from(keypair.publicKey.toBuffer())
+    };
+
+    writeFileSync("keypair.json", JSON.stringify(keyDetails, null, 2));
+
+    console.log("Keypair generated and written to keypair.json!");
+}
+
+async function requestAirdrop() {
+    ;
+}
+
+async function sendSol() {
+    ;
+}
+
 
 const program = new commander.Command();
-
-// console.log(figlet.textSync("Solana CLI", {
-//     font: "Standard",
-//     horizontalLayout: "default",
-//     verticalLayout: "default"
-// }));
 
 program
   .version("1.0.0")
@@ -20,4 +38,6 @@ program
 
 const options = program.opts();
 
-program.parse(process.argv);
+if (options.generate) {
+  generateKeyPair();
+}
