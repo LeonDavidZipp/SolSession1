@@ -4,7 +4,7 @@ const commander = require("commander");
 import {
     Keypair, Connection, clusterApiUrl,
     SystemProgram, Transaction, PublicKey,
-    LAMPORTS_PER_SOL
+    LAMPORTS_PER_SOL, sendAndConfirmTransaction
 } from "@solana/web3.js";
 import bs58 from "bs58";
 import { writeFileSync } from "fs";
@@ -53,6 +53,9 @@ async function sendSol(amount: number, from: string, to: string) {
         lamports: amount * LAMPORTS_PER_SOL,
     }),
     );
+    sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+    console.log(`Sent ${amount} SOL from ${from} to ${to}`);
+    console.log(`Transction hash: ${transaction.signature}`);
 }
 
 function privateKeyStringToKeypair(privateKeyString: string): Keypair {
@@ -75,4 +78,12 @@ const options = program.opts();
 
 if (options.generate) {
   generateKeyPair();
+}
+
+if (options.airdrop) {
+  requestAirdrop(options.airdrop);
+}
+
+if (options.send) {
+  sendSol(options.send[0], options.send[1], options.send[2]);
 }
