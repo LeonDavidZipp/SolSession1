@@ -12,25 +12,28 @@ let connection = new Connection(clusterApiUrl("testnet"));
 /**
  * Generates a new keypair and writes it to a file
  */
-export async function generateKeyPair() {
+export async function generateKeyPair(outputFile?: string) {
     const keypair = Keypair.generate();
     const keyDetails = {
-        // privateKeyString: bs58.encode(keypair.secretKey),
         privateKeyString: bs58.encode(keypair.secretKey),
         privateKey: Array.from(keypair.secretKey),
         publicKeyString: keypair.publicKey.toBase58(),
         publicKey: Array.from(keypair.publicKey.toBuffer())
     };
 
-    const replacer = (_: string, value: string) => {
-        if (Array.isArray(value)) {
-            return JSON.stringify(value);
-        }
-        return value;
-    };
-    writeFileSync("keypair.json", JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-
-    console.log("\x1b[32mKeypair generated and written to keypair.json!\x1b[0m");
+    if (outputFile) {
+        const replacer = (_: string, value: string) => {
+            if (Array.isArray(value)) {
+                return JSON.stringify(value);
+            }
+            return value;
+        };
+        writeFileSync(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
+        console.log(`\x1b[32mKeypair generated and written to ${outputFile}!\x1b[0m`);
+    } else {
+        console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
+        console.log(`Public key:    ${keyDetails.publicKeyString}\x1b[0m`);
+    }
 }
 
 /**

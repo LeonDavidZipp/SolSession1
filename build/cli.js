@@ -8,8 +8,9 @@ const program = new commander_1.Command();
 program
     .command('generate')
     .description('Generate a new keypair')
-    .action(() => {
-    (0, functions_1.generateKeyPair)();
+    .option('-o, --output <file>', 'Output file')
+    .action((options) => {
+    (0, functions_1.generateKeyPair)(options.output);
 });
 program
     .command('airdrop <amount> <receiverPublicKey>')

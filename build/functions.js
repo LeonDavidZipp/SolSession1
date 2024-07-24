@@ -24,24 +24,29 @@ let connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)("testnet"
 /**
  * Generates a new keypair and writes it to a file
  */
-function generateKeyPair() {
+function generateKeyPair(outputFile) {
     return __awaiter(this, void 0, void 0, function* () {
         const keypair = web3_js_1.Keypair.generate();
         const keyDetails = {
-            // privateKeyString: bs58.encode(keypair.secretKey),
             privateKeyString: bs58_1.default.encode(keypair.secretKey),
             privateKey: Array.from(keypair.secretKey),
             publicKeyString: keypair.publicKey.toBase58(),
             publicKey: Array.from(keypair.publicKey.toBuffer())
         };
-        const replacer = (_, value) => {
-            if (Array.isArray(value)) {
-                return JSON.stringify(value);
-            }
-            return value;
-        };
-        (0, fs_1.writeFileSync)("keypair.json", JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-        console.log("\x1b[32mKeypair generated and written to keypair.json!\x1b[0m");
+        if (outputFile) {
+            const replacer = (_, value) => {
+                if (Array.isArray(value)) {
+                    return JSON.stringify(value);
+                }
+                return value;
+            };
+            (0, fs_1.writeFileSync)(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
+            console.log(`\x1b[32mKeypair generated and written to ${outputFile}!\x1b[0m`);
+        }
+        else {
+            console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
+            console.log(`Public key:    ${keyDetails.publicKeyString}\x1b[0m`);
+        }
     });
 }
 /**

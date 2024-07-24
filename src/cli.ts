@@ -11,8 +11,9 @@ const program = new Command();
 program
     .command('generate')
     .description('Generate a new keypair')
-    .action(() => {
-        generateKeyPair();
+    .option('-o, --output <file>', 'Output file')
+    .action((options: { output?: string }) => {
+        generateKeyPair(options.output);
     });
 
 program
