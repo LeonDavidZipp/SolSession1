@@ -8,6 +8,6 @@ Create a command line interface tool with the following capabilities:
 
 ## Features:
 ### Creating New Keypairs
-Usage: ```flare generate [-o <file>]```
+Usage: ```bash // flare generate [-o <file>]```
 
 Creates a new private and public key. If an outfile is specified, the string representations as well as byte arrays are saved to it. Otherwise, both public and private key are written to the terminal.
