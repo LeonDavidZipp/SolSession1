@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const commander = require("commander");
 const commander_1 = require("commander");
 const web3_js_1 = require("@solana/web3.js");
 const bs58_1 = __importDefault(require("bs58"));
@@ -65,20 +64,6 @@ function requestAirdrop(amount, to) {
  */
 function sendSol(amount, from, to) {
     return __awaiter(this, void 0, void 0, function* () {
-        // let fromKeypair;
-        // try {
-        //     fromKeypair = privateKeyStringToKeypair(from);
-        // } catch (e) {
-        //     console.error("Invalid private key:", from, e);
-        //     return;
-        // }
-        // let toPubkey;
-        // try {
-        //     toPubkey = new PublicKey(to);
-        // } catch (e) {
-        //     console.error("Invalid public key:", to, e);
-        //     return;
-        // }
         try {
             let transaction = new web3_js_1.Transaction();
             transaction.add(web3_js_1.SystemProgram.transfer({
@@ -113,6 +98,10 @@ program
     .option("-s, --send <amount> <sender-address> <receiver-address>", "send SOL")
     .parse(process.argv);
 const options = program.opts();
+/**
+ * Handles the options passed to the CLI. Handles input parsing and calls the appropriate functions
+ * @param options
+ */
 function handleOptions(options) {
     if (options.generate) {
         generateKeyPair();

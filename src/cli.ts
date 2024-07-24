@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-const commander = require("commander");
 import { Command } from "commander";
 
 import {
@@ -59,22 +58,6 @@ async function requestAirdrop(amount: number, to: PublicKey) {
  * @param to The public address to send the SOL to
  */
 async function sendSol(amount: number, from: Keypair, to: PublicKey) {
-    // let fromKeypair;
-    // try {
-    //     fromKeypair = privateKeyStringToKeypair(from);
-    // } catch (e) {
-    //     console.error("Invalid private key:", from, e);
-    //     return;
-    // }
-
-    // let toPubkey;
-    // try {
-    //     toPubkey = new PublicKey(to);
-    // } catch (e) {
-    //     console.error("Invalid public key:", to, e);
-    //     return;
-    // }
-
     try {
         let transaction = new Transaction();
         transaction.add(
@@ -114,6 +97,10 @@ program
 
 const options = program.opts();
 
+/**
+ * Handles the options passed to the CLI. Handles input parsing and calls the appropriate functions
+ * @param options 
+ */
 function handleOptions(options: any) {
     if (options.generate) {
         generateKeyPair();
