@@ -33,8 +33,7 @@ function generateKeyPair() {
             publicKeyString: keypair.publicKey.toString(),
             publicKey: Array.from(keypair.publicKey.toBuffer())
         };
-        // writeFileSync("keypair.json", JSON.stringify(keyDetails, null, 2));
-        const replacer = (key, value) => {
+        const replacer = (_, value) => {
             if (Array.isArray(value)) {
                 return JSON.stringify(value);
             }
