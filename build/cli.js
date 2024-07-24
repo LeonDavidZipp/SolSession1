@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander = require("commander");
+const commander_1 = require("commander");
 const web3_js_1 = require("@solana/web3.js");
 const bs58_1 = __importDefault(require("bs58"));
 const fs_1 = require("fs");
@@ -64,30 +65,28 @@ function requestAirdrop(amount, to) {
  */
 function sendSol(amount, from, to) {
     return __awaiter(this, void 0, void 0, function* () {
-        let fromKeypair;
-        try {
-            fromKeypair = privateKeyStringToKeypair(from);
-        }
-        catch (e) {
-            console.error("Invalid private key:", from, e);
-            return;
-        }
-        let toPubkey;
-        try {
-            toPubkey = new web3_js_1.PublicKey(to);
-        }
-        catch (e) {
-            console.error("Invalid public key:", to, e);
-            return;
-        }
+        // let fromKeypair;
+        // try {
+        //     fromKeypair = privateKeyStringToKeypair(from);
+        // } catch (e) {
+        //     console.error("Invalid private key:", from, e);
+        //     return;
+        // }
+        // let toPubkey;
+        // try {
+        //     toPubkey = new PublicKey(to);
+        // } catch (e) {
+        //     console.error("Invalid public key:", to, e);
+        //     return;
+        // }
         try {
             let transaction = new web3_js_1.Transaction();
             transaction.add(web3_js_1.SystemProgram.transfer({
-                fromPubkey: fromKeypair.publicKey,
-                toPubkey: toPubkey,
+                fromPubkey: from.publicKey,
+                toPubkey: to,
                 lamports: amount * web3_js_1.LAMPORTS_PER_SOL,
             }));
-            const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [fromKeypair]);
+            const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [from]);
             console.log(`\x1b[32mSent ${amount} SOL from ${from} to ${to}`);
             console.log(`Transction hash: ${signature}\x1b[0m`);
         }
@@ -96,11 +95,16 @@ function sendSol(amount, from, to) {
         }
     });
 }
+/**
+ * converts a private key string to a Keypair object
+ * @param privateKeyString
+ * @returns
+ */
 function privateKeyStringToKeypair(privateKeyString) {
     const privateKeyUint8Array = bs58_1.default.decode(privateKeyString);
     return web3_js_1.Keypair.fromSecretKey(privateKeyUint8Array);
 }
-const program = new commander.Command();
+const program = new commander_1.Command();
 program
     .version("1.0.0")
     .description("Solana CLI for generating keypairs, requesting airdrops, and sending SOL")
@@ -119,19 +123,45 @@ function handleOptions(options) {
             const amount = Number(options.airdrop[0]);
             if (isNaN(amount)) {
                 console.error("Invalid amount for airdrop:", options.airdrop[0]);
-                // Use return if this is within a function to stop execution
                 return;
             }
             requestAirdrop(amount, publicKey);
         }
         catch (e) {
             console.error("Error processing airdrop:", e);
-            // Use return if this is within a function to stop execution
             return;
         }
     }
     if (options.send) {
-        sendSol(options.send[0], options.send[1], options.send[2]);
+        let amount;
+        try {
+            amount = Number(options.send[0]);
+            if (isNaN(amount)) {
+                console.error("Invalid amount to send:", options.send[0]);
+                return;
+            }
+        }
+        catch (e) {
+            console.error("Invalid amount to send:", options.send[0]);
+            return;
+        }
+        let fromKeypair;
+        try {
+            fromKeypair = privateKeyStringToKeypair(options.send[1]);
+        }
+        catch (e) {
+            console.error("Invalid private key:", options.send[1], e);
+            return;
+        }
+        let toPubkey;
+        try {
+            toPubkey = new web3_js_1.PublicKey(options.send[2]);
+        }
+        catch (e) {
+            console.error("Invalid public key:", options.send[2], e);
+            return;
+        }
+        sendSol(amount, fromKeypair, toPubkey);
     }
 }
 handleOptions(options);
