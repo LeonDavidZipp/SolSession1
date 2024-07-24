@@ -30,15 +30,30 @@ function generateKeyPair() {
             publicKey: Array.from(keypair.publicKey.toBuffer())
         };
         (0, fs_1.writeFileSync)("keypair.json", JSON.stringify(keyDetails, null, 2));
-        console.log("Keypair generated and written to keypair.json!");
+        console.log("\x1b[32mKeypair generated and written to keypair.json!\x1b[0m");
     });
 }
 /**
  * Request an airdrop of SOL to a public address
  * @param to The public address to send the airdrop to
  */
-function requestAirdrop(to) {
+function requestAirdrop(amount, to) {
     return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const airdropSignature = yield connection.requestAirdrop(to, amount * web3_js_1.LAMPORTS_PER_SOL);
+            const blockhash = yield connection.getLatestBlockhash();
+            const blockheight = yield connection.getBlockHeight();
+            const confArgs = {
+                signature: airdropSignature,
+                blockhash: blockhash.blockhash,
+                lastValidBlockHeight: blockheight,
+            };
+            const transaction = yield connection.confirmTransaction(confArgs);
+            console.log(`Airdrop successful: ${transaction.value}`);
+        }
+        catch (e) {
+            console.error("Error during airdrop request or confirmation:", e);
+        }
     });
 }
 /**
@@ -49,17 +64,36 @@ function requestAirdrop(to) {
  */
 function sendSol(amount, from, to) {
     return __awaiter(this, void 0, void 0, function* () {
-        let transaction = new web3_js_1.Transaction();
-        const fromKeypair = privateKeyStringToKeypair(from);
-        const toPubkey = new web3_js_1.PublicKey(to);
-        transaction.add(web3_js_1.SystemProgram.transfer({
-            fromPubkey: fromKeypair.publicKey,
-            toPubkey: toPubkey,
-            lamports: amount * web3_js_1.LAMPORTS_PER_SOL,
-        }));
-        (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [fromKeypair]);
-        console.log(`Sent ${amount} SOL from ${from} to ${to}`);
-        console.log(`Transction hash: ${transaction.signature}`);
+        let fromKeypair;
+        try {
+            fromKeypair = privateKeyStringToKeypair(from);
+        }
+        catch (e) {
+            console.error("Invalid private key:", from, e);
+            return;
+        }
+        let toPubkey;
+        try {
+            toPubkey = new web3_js_1.PublicKey(to);
+        }
+        catch (e) {
+            console.error("Invalid public key:", to, e);
+            return;
+        }
+        try {
+            let transaction = new web3_js_1.Transaction();
+            transaction.add(web3_js_1.SystemProgram.transfer({
+                fromPubkey: fromKeypair.publicKey,
+                toPubkey: toPubkey,
+                lamports: amount * web3_js_1.LAMPORTS_PER_SOL,
+            }));
+            const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [fromKeypair]);
+            console.log(`\x1b[32mSent ${amount} SOL from ${from} to ${to}`);
+            console.log(`Transction hash: ${signature}\x1b[0m`);
+        }
+        catch (e) {
+            console.error("Error during SOL transfer:", e);
+        }
     });
 }
 function privateKeyStringToKeypair(privateKeyString) {
@@ -69,18 +103,35 @@ function privateKeyStringToKeypair(privateKeyString) {
 const program = new commander.Command();
 program
     .version("1.0.0")
-    .description("An example CLI for managing a directory")
-    .option("-g, --generate", "generate new directory")
-    .option("-a, --airdrop <receiver-address>", "Airdrop SOL to a public address")
-    .option("-s, --send <amount> <sender-address> <receiver-address>", "Create a file")
+    .description("Solana CLI for generating keypairs, requesting airdrops, and sending SOL")
+    .option("-g, --generate", "generate new keypair")
+    .option("-a, --airdrop <receiver-address>", "request an airdrop")
+    .option("-s, --send <amount> <sender-address> <receiver-address>", "send SOL")
     .parse(process.argv);
 const options = program.opts();
-if (options.generate) {
-    generateKeyPair();
+function handleOptions(options) {
+    if (options.generate) {
+        generateKeyPair();
+    }
+    if (options.airdrop) {
+        try {
+            const publicKey = new web3_js_1.PublicKey(options.airdrop[1]);
+            const amount = Number(options.airdrop[0]);
+            if (isNaN(amount)) {
+                console.error("Invalid amount for airdrop:", options.airdrop[0]);
+                // Use return if this is within a function to stop execution
+                return;
+            }
+            requestAirdrop(amount, publicKey);
+        }
+        catch (e) {
+            console.error("Error processing airdrop:", e);
+            // Use return if this is within a function to stop execution
+            return;
+        }
+    }
+    if (options.send) {
+        sendSol(options.send[0], options.send[1], options.send[2]);
+    }
 }
-if (options.airdrop) {
-    requestAirdrop(options.airdrop);
-}
-if (options.send) {
-    sendSol(options.send[0], options.send[1], options.send[2]);
-}
+handleOptions(options);
