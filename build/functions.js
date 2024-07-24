@@ -20,7 +20,6 @@ exports.privateKeyStringToKeypair = privateKeyStringToKeypair;
 const web3_js_1 = require("@solana/web3.js");
 const bs58_1 = __importDefault(require("bs58"));
 const fs_1 = require("fs");
-// import { connection } from "./cli";
 let connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)("testnet"));
 /**
  * Generates a new keypair and writes it to a file
@@ -29,6 +28,7 @@ function generateKeyPair() {
     return __awaiter(this, void 0, void 0, function* () {
         const keypair = web3_js_1.Keypair.generate();
         const keyDetails = {
+            privateKeyString: bs58_1.default.encode(keypair.secretKey),
             privateKey: Array.from(keypair.secretKey),
             publicKeyString: keypair.publicKey.toString(),
             publicKey: Array.from(keypair.publicKey.toBuffer())
@@ -84,11 +84,15 @@ function sendSol(amount, from, to) {
         }
     });
 }
+/**
+ * Get the balance of a public address
+ * @param publicKey The public address to get the balance of
+ */
 function getBalance(publicKey) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const balance = yield connection.getBalance(publicKey);
-            console.log(`\x1b[32mBalance of ${publicKey}: ${balance / web3_js_1.LAMPORTS_PER_SOL} SOL\x1b[0m`);
+            console.log(`\x1b[32mBalance: ${balance / web3_js_1.LAMPORTS_PER_SOL} SOL\x1b[0m`);
         }
         catch (e) {
             console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);

@@ -3,7 +3,7 @@ import { Command } from "commander";
 import { PublicKey } from "@solana/web3.js";
 import {
     generateKeyPair, requestAirdrop,
-    sendSol, privateKeyStringToKeypair
+    sendSol, getBalance, privateKeyStringToKeypair
 } from "./functions";
 
 const program = new Command();
@@ -25,9 +25,7 @@ const options = program.opts();
 function handleOptions(options: any) {
     if (options.generate) {
         generateKeyPair();
-    }
-
-    if (options.airdrop) {
+    } else if (options.airdrop) {
         try {
             const publicKey = new PublicKey(options.airdrop[1]);
             const amount = Number(options.airdrop[0]);
@@ -40,9 +38,7 @@ function handleOptions(options: any) {
             console.error("\x1b[31m%s\x1b[0m", "Error processing airdrop:", e);
             return;
         }
-    }
-
-    if (options.send) {
+    } else if (options.send) {
         let amount;
         try {
             amount = Number(options.send[0]);
@@ -70,8 +66,15 @@ function handleOptions(options: any) {
             console.error("\x1b[31m%s\x1b[0m", "Invalid public key:", options.send[2], e);
             return;
         }
-
         sendSol(amount, fromKeypair, toPubkey);
+    } else if (options.balance) {
+        try {
+            const publicKey = new PublicKey(options.balance);
+            getBalance(publicKey);
+        } catch (e) {
+            console.error("\x1b[31m%s\x1b[0m", "Error processing balance:", e);
+            return;
+        }
     }
 }
 

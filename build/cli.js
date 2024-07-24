@@ -22,7 +22,7 @@ function handleOptions(options) {
     if (options.generate) {
         (0, functions_1.generateKeyPair)();
     }
-    if (options.airdrop) {
+    else if (options.airdrop) {
         try {
             const publicKey = new web3_js_1.PublicKey(options.airdrop[1]);
             const amount = Number(options.airdrop[0]);
@@ -37,7 +37,7 @@ function handleOptions(options) {
             return;
         }
     }
-    if (options.send) {
+    else if (options.send) {
         let amount;
         try {
             amount = Number(options.send[0]);
@@ -67,6 +67,16 @@ function handleOptions(options) {
             return;
         }
         (0, functions_1.sendSol)(amount, fromKeypair, toPubkey);
+    }
+    else if (options.balance) {
+        try {
+            const publicKey = new web3_js_1.PublicKey(options.balance);
+            (0, functions_1.getBalance)(publicKey);
+        }
+        catch (e) {
+            console.error("\x1b[31m%s\x1b[0m", "Error processing balance:", e);
+            return;
+        }
     }
 }
 handleOptions(options);

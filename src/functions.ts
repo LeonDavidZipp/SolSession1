@@ -6,7 +6,6 @@ import {
 } from "@solana/web3.js";
 import bs58 from "bs58";
 import { writeFileSync } from "fs";
-// import { connection } from "./cli";
 
 let connection = new Connection(clusterApiUrl("testnet"));
 
@@ -16,6 +15,7 @@ let connection = new Connection(clusterApiUrl("testnet"));
 export async function generateKeyPair() {
     const keypair = Keypair.generate();
     const keyDetails = {
+        privateKeyString: bs58.encode(keypair.secretKey),
         privateKey: Array.from(keypair.secretKey),
         publicKeyString: keypair.publicKey.toString(),
         publicKey: Array.from(keypair.publicKey.toBuffer())
@@ -73,10 +73,14 @@ export async function sendSol(amount: number, from: Keypair, to: PublicKey) {
     }
 }
 
+/**
+ * Get the balance of a public address
+ * @param publicKey The public address to get the balance of
+ */
 export async function getBalance(publicKey: PublicKey) {
     try {
         const balance = await connection.getBalance(publicKey);
-        console.log(`\x1b[32mBalance of ${publicKey}: ${balance / LAMPORTS_PER_SOL} SOL\x1b[0m`);
+        console.log(`\x1b[32mBalance: ${balance / LAMPORTS_PER_SOL} SOL\x1b[0m`);
     } catch (e) {
         console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
     }
