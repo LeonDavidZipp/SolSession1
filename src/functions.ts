@@ -11,6 +11,7 @@ let connection = new Connection(clusterApiUrl("testnet"));
 
 /**
  * Generates a new keypair and writes it to a file
+ * @param outputFile The file to write the keypair to if specified
  */
 export async function generateKeyPair(outputFile?: string) {
     const keypair = Keypair.generate();
@@ -29,7 +30,7 @@ export async function generateKeyPair(outputFile?: string) {
             return value;
         };
         writeFileSync(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-        console.log(`\x1b[32mKeypair generated and written to ${outputFile}!\x1b[0m`);
+        console.log(`\x1b[32mKeypair written to ${outputFile}!\x1b[0m`);
     } else {
         console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
         console.log(`Public key:    ${keyDetails.publicKeyString}\x1b[0m`);
@@ -89,7 +90,7 @@ export async function getBalance(publicKey: PublicKey) {
         const balance = await connection.getBalance(publicKey);
         console.log(`\x1b[32mBalance: ${(balance / LAMPORTS_PER_SOL).toFixed(9)} SOL\x1b[0m`);
     } catch (e) {
-        console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
+        console.error(e);
     }
 }
 

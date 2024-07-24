@@ -35,7 +35,7 @@ program
 
 program
     .command('balance <publicKey>')
-    .description('Get balance of a public address')
+    .description('Get balance of a wallet associated with a public key')
     .action((publicKey: string) => {
         getBalance(new PublicKey(publicKey));
     });

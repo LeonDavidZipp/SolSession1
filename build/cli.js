@@ -29,7 +29,7 @@ program
 });
 program
     .command('balance <publicKey>')
-    .description('Get balance of a public address')
+    .description('Get balance of a wallet associated with a public key')
     .action((publicKey) => {
     (0, functions_1.getBalance)(new web3_js_1.PublicKey(publicKey));
 });

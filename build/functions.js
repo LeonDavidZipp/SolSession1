@@ -23,6 +23,7 @@ const fs_1 = require("fs");
 let connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)("testnet"));
 /**
  * Generates a new keypair and writes it to a file
+ * @param outputFile The file to write the keypair to if specified
  */
 function generateKeyPair(outputFile) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -41,7 +42,7 @@ function generateKeyPair(outputFile) {
                 return value;
             };
             (0, fs_1.writeFileSync)(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-            console.log(`\x1b[32mKeypair generated and written to ${outputFile}!\x1b[0m`);
+            console.log(`\x1b[32mKeypair written to ${outputFile}!\x1b[0m`);
         }
         else {
             console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
@@ -104,7 +105,7 @@ function getBalance(publicKey) {
             console.log(`\x1b[32mBalance: ${(balance / web3_js_1.LAMPORTS_PER_SOL).toFixed(9)} SOL\x1b[0m`);
         }
         catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
+            console.error(e);
         }
     });
 }
