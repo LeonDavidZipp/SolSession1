@@ -4,12 +4,13 @@
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-    "devDependencies": {
+  "devDependencies": {
     "@types/commander": "^2.12.2",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.1",
+    "bs58": "^6.0.0",
     "commander": "^12.1.0"
   }
 }
