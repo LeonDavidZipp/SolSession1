@@ -13,7 +13,7 @@ flare generate [-o <file>]
 ```
 
 ```bash
-flare generate [--ooutfile <file>]
+flare generate [--outfile <file>]
 ```
 
 Creates a new private and public key. If an outfile is specified, the string representations as well as byte arrays are saved to it. Otherwise, both public and private key are written to the terminal.
