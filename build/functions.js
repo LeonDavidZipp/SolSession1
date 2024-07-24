@@ -28,9 +28,10 @@ function generateKeyPair() {
     return __awaiter(this, void 0, void 0, function* () {
         const keypair = web3_js_1.Keypair.generate();
         const keyDetails = {
+            // privateKeyString: bs58.encode(keypair.secretKey),
             privateKeyString: bs58_1.default.encode(keypair.secretKey),
             privateKey: Array.from(keypair.secretKey),
-            publicKeyString: keypair.publicKey.toString(),
+            publicKeyString: keypair.publicKey.toBase58(),
             publicKey: Array.from(keypair.publicKey.toBuffer())
         };
         const replacer = (_, value) => {
@@ -52,17 +53,15 @@ function requestAirdrop(amount, to) {
         try {
             const airdropSignature = yield connection.requestAirdrop(to, amount * web3_js_1.LAMPORTS_PER_SOL);
             const blockhash = yield connection.getLatestBlockhash();
-            const blockheight = yield connection.getBlockHeight();
             const confArgs = {
                 signature: airdropSignature,
                 blockhash: blockhash.blockhash,
-                lastValidBlockHeight: blockheight,
+                lastValidBlockHeight: blockhash.lastValidBlockHeight,
             };
             const transaction = yield connection.confirmTransaction(confArgs);
-            console.log(`Airdrop successful: ${transaction.value}`);
         }
         catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Error during airdrop request or confirmation:", e);
+            console.error(e);
         }
     });
 }
@@ -75,14 +74,13 @@ function requestAirdrop(amount, to) {
 function sendSol(amount, from, to) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let transaction = new web3_js_1.Transaction();
-            transaction.add(web3_js_1.SystemProgram.transfer({
+            const transaction = new web3_js_1.Transaction().add(web3_js_1.SystemProgram.transfer({
                 fromPubkey: from.publicKey,
                 toPubkey: to,
                 lamports: amount * web3_js_1.LAMPORTS_PER_SOL,
             }));
             const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [from]);
-            console.log(`\x1b[32mSent ${amount} SOL from ${from} to ${to}`);
+            console.log(`\x1b[32mSent ${amount} SOL to ${to}`);
             console.log(`Transction hash: ${signature}\x1b[0m`);
         }
         catch (e) {
@@ -98,7 +96,7 @@ function getBalance(publicKey) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const balance = yield connection.getBalance(publicKey);
-            console.log(`\x1b[32mBalance: ${balance / web3_js_1.LAMPORTS_PER_SOL} SOL\x1b[0m`);
+            console.log(`\x1b[32mBalance: ${(balance / web3_js_1.LAMPORTS_PER_SOL).toFixed(9)} SOL\x1b[0m`);
         }
         catch (e) {
             console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
