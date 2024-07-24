@@ -45,7 +45,7 @@ export async function requestAirdrop(amount: number, to: PublicKey) {
         const transaction = await connection.confirmTransaction(confArgs);
         console.log(`Airdrop successful: ${transaction.value}`);
     } catch (e) {
-        console.error("Error during airdrop request or confirmation:", e);
+        console.error("\x1b[31m%s\x1b[0m", "Error during airdrop request or confirmation:", e);
     }
 }
 
@@ -69,7 +69,16 @@ export async function sendSol(amount: number, from: Keypair, to: PublicKey) {
         console.log(`\x1b[32mSent ${amount} SOL from ${from} to ${to}`);
         console.log(`Transction hash: ${signature}\x1b[0m`);
     } catch (e) {
-        console.error("Error during SOL transfer:", e);
+        console.error("\x1b[31m%s\x1b[0m", "Error during SOL transfer:", e);
+    }
+}
+
+export async function getBalance(publicKey: PublicKey) {
+    try {
+        const balance = await connection.getBalance(publicKey);
+        console.log(`\x1b[32mBalance of ${publicKey}: ${balance / LAMPORTS_PER_SOL} SOL\x1b[0m`);
+    } catch (e) {
+        console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
     }
 }
 

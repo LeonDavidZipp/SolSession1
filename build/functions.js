@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateKeyPair = generateKeyPair;
 exports.requestAirdrop = requestAirdrop;
 exports.sendSol = sendSol;
+exports.getBalance = getBalance;
 exports.privateKeyStringToKeypair = privateKeyStringToKeypair;
 const web3_js_1 = require("@solana/web3.js");
 const bs58_1 = __importDefault(require("bs58"));
@@ -55,7 +56,7 @@ function requestAirdrop(amount, to) {
             console.log(`Airdrop successful: ${transaction.value}`);
         }
         catch (e) {
-            console.error("Error during airdrop request or confirmation:", e);
+            console.error("\x1b[31m%s\x1b[0m", "Error during airdrop request or confirmation:", e);
         }
     });
 }
@@ -79,7 +80,18 @@ function sendSol(amount, from, to) {
             console.log(`Transction hash: ${signature}\x1b[0m`);
         }
         catch (e) {
-            console.error("Error during SOL transfer:", e);
+            console.error("\x1b[31m%s\x1b[0m", "Error during SOL transfer:", e);
+        }
+    });
+}
+function getBalance(publicKey) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const balance = yield connection.getBalance(publicKey);
+            console.log(`\x1b[32mBalance of ${publicKey}: ${balance / web3_js_1.LAMPORTS_PER_SOL} SOL\x1b[0m`);
+        }
+        catch (e) {
+            console.error("\x1b[31m%s\x1b[0m", "Error getting balance:", e);
         }
     });
 }
