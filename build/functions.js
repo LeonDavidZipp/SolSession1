@@ -33,7 +33,14 @@ function generateKeyPair() {
             publicKeyString: keypair.publicKey.toString(),
             publicKey: Array.from(keypair.publicKey.toBuffer())
         };
-        (0, fs_1.writeFileSync)("keypair.json", JSON.stringify(keyDetails, null, 2));
+        // writeFileSync("keypair.json", JSON.stringify(keyDetails, null, 2));
+        const replacer = (key, value) => {
+            if (Array.isArray(value)) {
+                return JSON.stringify(value);
+            }
+            return value;
+        };
+        (0, fs_1.writeFileSync)("keypair.json", JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
         console.log("\x1b[32mKeypair generated and written to keypair.json!\x1b[0m");
     });
 }
