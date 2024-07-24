@@ -6,6 +6,11 @@ Create a command line interface tool with the following capabilities:
 3. Send SOL from one wallet to another
 4. Show balance of a wallet
 
+## Setup
+```bash
+Lorem ipsum
+```
+
 ## Features:
 ### Creating New Keypairs
 ```bash
@@ -17,3 +22,26 @@ flare generate [--outfile <file>]
 ```
 
 Creates a new private and public key. If an outfile is specified, the string representations as well as byte arrays are saved to it. Otherwise, both public and private key are written to the terminal.
+
+### Request Airdrops
+```bash
+flare airdrop -a <amount> -r <receiverPublicKey>
+```
+
+```bash
+flare airdrop --amount <amount> --receiver <receiverPublicKey>
+```
+
+### Send SOL
+```bash
+flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
+```
+
+```bash
+flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
+```
+
+### Show Balance
+```bash
+flare balance <publicKey>
+```
