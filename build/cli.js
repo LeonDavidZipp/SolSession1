@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#! /usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
@@ -6,77 +6,30 @@ const web3_js_1 = require("@solana/web3.js");
 const functions_1 = require("./functions");
 const program = new commander_1.Command();
 program
-    .version("1.0.0")
-    .description("Solana CLI for generating keypairs, requesting airdrops, and sending SOL")
-    .option("-g, --generate", "generate new keypair")
-    .option("-a, --airdrop <receiver-address>", "request an airdrop")
-    .option("-s, --send <amount> <sender-address> <receiver-address>", "send SOL")
-    .option("-b, --balance <public-address>", "get balance of a public address")
-    .parse(process.argv);
-const options = program.opts();
-/**
- * Handles the options passed to the CLI. Handles input parsing and calls the appropriate functions
- * @param options
- */
-function handleOptions(options) {
-    if (options.generate) {
-        (0, functions_1.generateKeyPair)();
-    }
-    else if (options.airdrop) {
-        try {
-            const publicKey = new web3_js_1.PublicKey(options.airdrop[1]);
-            const amount = Number(options.airdrop[0]);
-            if (isNaN(amount)) {
-                console.error("\x1b[31m%s\x1b[0m", "Invalid amount for airdrop:", options.airdrop[0]);
-                return;
-            }
-            (0, functions_1.requestAirdrop)(amount, publicKey);
-        }
-        catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Error processing airdrop:", e);
-            return;
-        }
-    }
-    else if (options.send) {
-        let amount;
-        try {
-            amount = Number(options.send[0]);
-            if (isNaN(amount)) {
-                console.error("\x1b[31m%s\x1b[0m", "Invalid amount to send:", options.send[0]);
-                return;
-            }
-        }
-        catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Invalid amount to send:", options.send[0]);
-            return;
-        }
-        let fromKeypair;
-        try {
-            fromKeypair = (0, functions_1.privateKeyStringToKeypair)(options.send[1]);
-        }
-        catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Invalid private key:", options.send[1], e);
-            return;
-        }
-        let toPubkey;
-        try {
-            toPubkey = new web3_js_1.PublicKey(options.send[2]);
-        }
-        catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Invalid public key:", options.send[2], e);
-            return;
-        }
-        (0, functions_1.sendSol)(amount, fromKeypair, toPubkey);
-    }
-    else if (options.balance) {
-        try {
-            const publicKey = new web3_js_1.PublicKey(options.balance);
-            (0, functions_1.getBalance)(publicKey);
-        }
-        catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Error processing balance:", e);
-            return;
-        }
-    }
-}
-handleOptions(options);
+    .command('generate')
+    .description('Generate a new keypair')
+    .action(() => {
+    (0, functions_1.generateKeyPair)();
+});
+program
+    .command('airdrop <amount> <receiverPublicKey>')
+    .description('Request an airdrop')
+    .action((amount, receiverPublicKey) => {
+    const publicKey = new web3_js_1.PublicKey(receiverPublicKey);
+    (0, functions_1.requestAirdrop)(Number(amount), publicKey);
+});
+program
+    .command('send <amount> <senderPrivateKey> <receiverPublicKey>')
+    .description('Send SOL')
+    .action((amount, senderPrivateKey, receiverPublicKeyString) => {
+    const senderKeypair = (0, functions_1.privateKeyStringToKeypair)(senderPrivateKey);
+    const receiverPublicKey = new web3_js_1.PublicKey(receiverPublicKeyString);
+    (0, functions_1.sendSol)(Number(amount), senderKeypair, receiverPublicKey);
+});
+program
+    .command('balance <publicKey>')
+    .description('Get balance of a public address')
+    .action((publicKey) => {
+    (0, functions_1.getBalance)(new web3_js_1.PublicKey(publicKey));
+});
+program.parse(process.argv);
