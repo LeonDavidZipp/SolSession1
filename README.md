@@ -8,6 +8,7 @@ The first exercise was to program a simple command line interface with the follo
 2. Request Airdrops
 3. Send SOL from one wallet to another
 4. Show balance of a wallet
+
 More on this project here.
 
 ### session_2:
