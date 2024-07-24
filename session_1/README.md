@@ -38,7 +38,7 @@ flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
 ```
 
 ```bash
-flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
+flare send --amount <amount> --sender <senderPrivateKey> --receiver <receiverPublicKey>
 ```
 
 ### Show Balance
