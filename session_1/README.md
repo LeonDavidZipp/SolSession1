@@ -23,7 +23,7 @@ flare generate [-o <file>]
 flare generate [--outfile <file>]
 ```
 
-### Request Airdrops
+### airdrop
 Requests the specified amount of SOL from the cluster.
 
 ```bash
@@ -34,7 +34,7 @@ flare airdrop -a <amount> -r <receiverPublicKey>
 flare airdrop --amount <amount> --receiver <receiverPublicKey>
 ```
 
-### Send SOL
+### send
 Sends the specified amount of SOL.
 
 ```bash
@@ -45,7 +45,7 @@ flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
 flare send --amount <amount> --sender <senderPrivateKey> --receiver <receiverPublicKey>
 ```
 
-### Show Balance
+### balance
 Shows the balance of the specified wallet.
 
 ```bash
