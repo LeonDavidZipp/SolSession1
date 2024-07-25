@@ -1,18 +1,20 @@
 # session_1: Flare CLI
 ## Goal:
 Create a command line interface tool with the following capabilities:
-1. Create new Keypairs
-2. Request Airdrops
-3. Send SOL from one wallet to another
-4. Show balance of a wallet
+1. generate: generates new keypair
+2. airdrop: request Airdrops
+3. send: send SOL from one wallet to another
+4. balance: show balance of a wallet
 
 ## Setup
 ```bash
-Lorem ipsum
+chmod +x setup.sh && ./setup.sh
 ```
 
 ## Features:
-### Creating New Keypairs
+### generate
+Generates a new private and public key. If an outfile is specified, the string representations as well as byte arrays are saved to it. Otherwise, both public and private key are written to the terminal.
+
 ```bash
 flare generate [-o <file>]
 ```
@@ -21,9 +23,9 @@ flare generate [-o <file>]
 flare generate [--outfile <file>]
 ```
 
-Creates a new private and public key. If an outfile is specified, the string representations as well as byte arrays are saved to it. Otherwise, both public and private key are written to the terminal.
-
 ### Request Airdrops
+Requests the specified amount of SOL from the cluster.
+
 ```bash
 flare airdrop -a <amount> -r <receiverPublicKey>
 ```
@@ -33,6 +35,8 @@ flare airdrop --amount <amount> --receiver <receiverPublicKey>
 ```
 
 ### Send SOL
+Sends the specified amount of SOL.
+
 ```bash
 flare send -a <amount> -s <senderPrivateKey> -r <receiverPublicKey>
 ```
@@ -42,6 +46,8 @@ flare send --amount <amount> --sender <senderPrivateKey> --receiver <receiverPub
 ```
 
 ### Show Balance
+Shows the balance of the specified wallet.
+
 ```bash
 flare balance <publicKey>
 ```
