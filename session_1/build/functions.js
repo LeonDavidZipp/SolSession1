@@ -42,11 +42,11 @@ function generateKeyPair(outputFile) {
                 return value;
             };
             (0, fs_1.writeFileSync)(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-            console.log(`\x1b[32mKeypair written to ${outputFile}!\x1b[0m`);
+            console.log(`✅ Keypair written to ${outputFile}!`);
         }
         else {
-            console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
-            console.log(`Public key:    ${keyDetails.publicKeyString}\x1b[0m`);
+            console.log(`✅ Private key:   ${keyDetails.privateKeyString}`);
+            console.log(`✅ Public key:    ${keyDetails.publicKeyString}`);
         }
     });
 }
@@ -65,9 +65,10 @@ function requestAirdrop(amount, to) {
                 lastValidBlockHeight: blockhash.lastValidBlockHeight,
             };
             const transaction = yield connection.confirmTransaction(confArgs);
+            console.log(`✅ Airdrop successful`);
         }
         catch (e) {
-            console.error(e);
+            console.error(`❌ Airdrop failed`);
         }
     });
 }
@@ -86,11 +87,11 @@ function sendSol(amount, from, to) {
                 lamports: amount * web3_js_1.LAMPORTS_PER_SOL,
             }));
             const signature = yield (0, web3_js_1.sendAndConfirmTransaction)(connection, transaction, [from]);
-            console.log(`\x1b[32mSent ${amount} SOL to ${to}`);
-            console.log(`Transction hash: ${signature}\x1b[0m`);
+            console.log(`✅ Sent ${amount} SOL to ${to}`);
+            console.log(`✅ Transction hash: ${signature}`);
         }
         catch (e) {
-            console.error("\x1b[31m%s\x1b[0m", "Error during SOL transfer:", e);
+            console.error(`❌ Transaction failed`);
         }
     });
 }
@@ -102,10 +103,10 @@ function getBalance(publicKey) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const balance = yield connection.getBalance(publicKey);
-            console.log(`\x1b[32mBalance: ${(balance / web3_js_1.LAMPORTS_PER_SOL).toFixed(9)} SOL\x1b[0m`);
+            console.log(`✅ Balance: ${(balance / web3_js_1.LAMPORTS_PER_SOL).toFixed(9)} SOL`);
         }
         catch (e) {
-            console.error(e);
+            console.error(`❌ Failed to get balance`);
         }
     });
 }

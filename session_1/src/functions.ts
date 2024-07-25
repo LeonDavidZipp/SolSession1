@@ -30,10 +30,10 @@ export async function generateKeyPair(outputFile?: string) {
             return value;
         };
         writeFileSync(outputFile, JSON.stringify(keyDetails, replacer, 2).replace(/"\[/g, '[').replace(/\]"/g, ']').replace(/\\,/g, ','));
-        console.log(`\x1b[32mKeypair written to ${outputFile}!\x1b[0m`);
+        console.log(`✅ Keypair written to ${outputFile}!`);
     } else {
-        console.log(`\x1b[32mPrivate key:   ${keyDetails.privateKeyString}`);
-        console.log(`Public key:    ${keyDetails.publicKeyString}\x1b[0m`);
+        console.log(`✅ Private key:   ${keyDetails.privateKeyString}`);
+        console.log(`✅ Public key:    ${keyDetails.publicKeyString}`);
     }
 }
 
@@ -53,8 +53,9 @@ export async function requestAirdrop(amount: number, to: PublicKey) {
         };
 
         const transaction = await connection.confirmTransaction(confArgs);
+        console.log(`✅ Airdrop successful`);
     } catch (e) {
-        console.error(e);
+        console.error(`❌ Airdrop failed`);
     }
 }
 
@@ -74,10 +75,10 @@ export async function sendSol(amount: number, from: Keypair, to: PublicKey) {
             }),
         );
         const signature = await sendAndConfirmTransaction(connection, transaction, [from]);
-        console.log(`\x1b[32mSent ${amount} SOL to ${to}`);
-        console.log(`Transction hash: ${signature}\x1b[0m`);
+        console.log(`✅ Sent ${amount} SOL to ${to}`);
+        console.log(`✅ Transction hash: ${signature}`);
     } catch (e) {
-        console.error("\x1b[31m%s\x1b[0m", "Error during SOL transfer:", e);
+        console.error(`❌ Transaction failed`);
     }
 }
 
@@ -88,9 +89,9 @@ export async function sendSol(amount: number, from: Keypair, to: PublicKey) {
 export async function getBalance(publicKey: PublicKey) {
     try {
         const balance = await connection.getBalance(publicKey);
-        console.log(`\x1b[32mBalance: ${(balance / LAMPORTS_PER_SOL).toFixed(9)} SOL\x1b[0m`);
+        console.log(`✅ Balance: ${(balance / LAMPORTS_PER_SOL).toFixed(9)} SOL`);
     } catch (e) {
-        console.error(e);
+        console.error(`❌ Failed to get balance`);
     }
 }
 

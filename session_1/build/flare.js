@@ -18,7 +18,23 @@ program
     .requiredOption('-a, --amount <amount>', 'Amount of SOL to request')
     .requiredOption('-r, --receiver <receiverPublicKey>', 'Public key of the receiver')
     .action((amount, receiverPublicKeyString) => {
-    (0, functions_1.requestAirdrop)(Number(amount), new web3_js_1.PublicKey(receiverPublicKeyString));
+    let amnt;
+    let publicKey;
+    try {
+        publicKey = new web3_js_1.PublicKey(receiverPublicKeyString);
+    }
+    catch (e) {
+        console.error('❌ Invalid public key');
+        process.exit(1);
+    }
+    try {
+        amnt = Number(amount);
+    }
+    catch (e) {
+        console.error('❌ Invalid amount');
+        process.exit(1);
+    }
+    (0, functions_1.requestAirdrop)(amnt, publicKey);
 });
 program
     .command('send')
@@ -28,12 +44,44 @@ program
     .requiredOption('-r, --receiver <receiverPublicKey>', 'Public key of the receiver')
     .action((options) => {
     const { amount, senderPrivateKey, receiverPublicKey } = options;
-    (0, functions_1.sendSol)(Number(amount), (0, functions_1.privateKeyStringToKeypair)(senderPrivateKey), new web3_js_1.PublicKey(receiverPublicKey));
+    let amnt;
+    let sPK;
+    let rPK;
+    try {
+        amnt = Number(amount);
+    }
+    catch (e) {
+        console.error('❌ Invalid amount');
+        process.exit(1);
+    }
+    try {
+        sPK = (0, functions_1.privateKeyStringToKeypair)(senderPrivateKey);
+    }
+    catch (e) {
+        console.error('❌ Invalid private key');
+        process.exit(1);
+    }
+    try {
+        rPK = new web3_js_1.PublicKey(receiverPublicKey);
+    }
+    catch (e) {
+        console.error('❌ Invalid public key');
+        process.exit(1);
+    }
+    (0, functions_1.sendSol)(amnt, sPK, rPK);
 });
 program
     .command('balance <publicKey>')
     .description('Get balance of a wallet associated with a public key')
     .action((publicKey) => {
-    (0, functions_1.getBalance)(new web3_js_1.PublicKey(publicKey));
+    let pK;
+    try {
+        pK = new web3_js_1.PublicKey(publicKey);
+    }
+    catch (e) {
+        console.error('❌ Invalid public key');
+        process.exit(1);
+    }
+    (0, functions_1.getBalance)(pK);
 });
 program.parse(process.argv);
