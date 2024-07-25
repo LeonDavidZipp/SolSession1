@@ -1,4 +1,6 @@
 {
+    "name": "flare",
+    "version": "1.0.0",
     "main": "build/flare.js",
     "bin": {
         "flare": "./build/flare.js"
