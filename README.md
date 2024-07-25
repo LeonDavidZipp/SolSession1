@@ -9,7 +9,7 @@ The first exercise was to program a simple command line interface with the follo
 3. Send SOL from one wallet to another
 4. Show balance of a wallet
 
-More on this project here.
+More on this project [here](https://github.com/LeonDavidZipp/SolanaSummerFellowship2024/blob/main/session_1/README.md).
 
 ### session_2:
 ### session_3:
