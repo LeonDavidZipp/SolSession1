@@ -1,0 +1,3 @@
+from node:latest as devcontainer
+
+LABEL maintainer="lzipp"
