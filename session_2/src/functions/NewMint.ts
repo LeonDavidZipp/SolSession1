@@ -23,50 +23,6 @@ import {
     mintTo,
 } from "@solana/spl-token";
 
-interface MintResult {
-    mint: PublicKey;
-    tokenAccount: PublicKey;
-    transactionSignature: string;
-}
-
-export async function newMint(
-    connection: Connection,
-    ownerKeyPair: Keypair,
-    decimals: number,
-    amount: number
-): Promise<MintResult> {
-    // const mint = await createMint(
-    //     connection,
-    //     ownerKeyPair, // payer
-    //     ownerKeyPair.publicKey, // mint authority
-    //     ownerKeyPair.publicKey, // freeze authority
-    //     decimals // decimals of token
-    // );
-
-    // token account (associated with minting account)
-    const tokenAccount = await getOrCreateAssociatedTokenAccount(
-        connection,
-        ownerKeyPair, // payer
-        mint, // mint account
-        ownerKeyPair.publicKey // owner
-    );
-
-    const mintTransactionSignature = await mintTo(
-        connection,
-        ownerKeyPair,
-        mint,
-        tokenAccount.address,
-        ownerKeyPair,
-        amount
-    );
-
-    return Promise.resolve({
-        mint: mint,
-        tokenAccount: tokenAccount.address,
-        transactionSignature: transactionSignature,
-    });
-}
-
 /**
  * Creates a new token mint
  * @param connection the connection to the solana blockchain
@@ -133,3 +89,7 @@ export const TransferTokens = async (
         amount
     );
 };
+
+export const BurnTokens = () => {};
+
+export const ChangeOwnerOfATA = () => {};
