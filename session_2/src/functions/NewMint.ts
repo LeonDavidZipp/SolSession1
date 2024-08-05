@@ -2,6 +2,8 @@ import {
     Connection,
     clusterApiUrl,
     PublicKey,
+    Signer,
+    ConfirmOptions,
     Transaction,
     TransactionSignature,
     Keypair,
@@ -21,6 +23,7 @@ import {
     transfer,
     getOrCreateAssociatedTokenAccount,
     mintTo,
+    burn,
 } from "@solana/spl-token";
 
 /**
@@ -82,14 +85,34 @@ export const TransferTokens = async (
 ): Promise<TransactionSignature> => {
     return transfer(
         connection,
-        owner, // payer
+        owner, // payer, also owner of source token account
         source, // source token account
         destination, // token account receiving the tokens
-        owner, // owner of the token account
+        owner, // owner of the source token account
         amount
     );
 };
 
-export const BurnTokens = () => {};
+export const BurnTokens = (
+    connection: Connection,
+    owner: Signer | PublicKey,
+    account: PublicKey,
+    mint: PublicKey,
+    amount: number | bigint,
+    multiSigners: Signer[] = [],
+    confirmOptions?: ConfirmOptions,
+): Promise<TransactionSignature> => {
+    return burn(
+        connection,
+        owner, // payer
+        account, // account to burn tokens from
+        mint, // mint account
+        owner, // owner of the account
+        amount, // amount of tokens to burn
+        multiSigners, // additional signers
+        confirmOptions, // confirm options
+        TOKEN_PROGRAM_ID
+    );
+};
 
 export const ChangeOwnerOfATA = () => {};
