@@ -19,16 +19,20 @@ function App() {
     const [ATAPubkey, setATAPubkey] = useState<PublicKey | null>(null);
 
     return (
-        <div className={styles.App}>
-            <AppBar />
-            <h1>Vite + React</h1>
-            {/* <div>
+        <>
+            {/* <title>Token Program</title> */}
+            <meta name="description" content="Token Program" />
+            <div className={styles.App}>
+                <AppBar />
+                <h1>Vite + React</h1>
+                {/* <div>
                 <TokenMintForm
                     tokenMintPubKey={tokenMintPubKey}
                     setTokenMintPubKey={setTokenMintPubKey}
                 />
             </div> */}
-        </div>
+            </div>
+        </>
     );
 }
 
